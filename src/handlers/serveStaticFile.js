@@ -14,7 +14,7 @@ const contentType = (file) => {
   return extensions[extension];
 };
 
-const serveStaticFile = (serveFrom) => (request, response) => {
+const serveStaticFile = (serveFrom) => (request, response, next) => {
   const { pathname } = request.url;
   const filename = pathname === '/' ? '/index.html' : pathname;
   try {
@@ -22,7 +22,7 @@ const serveStaticFile = (serveFrom) => (request, response) => {
     response.setHeader('Content-type', contentType(filename) || 'text/plain');
     response.end(content);
   } catch (error) {
-    return false;
+    next();
   }
   return true;
 };
