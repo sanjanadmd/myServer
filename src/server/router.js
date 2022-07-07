@@ -12,11 +12,12 @@ const createNext = handlers => {
   return callNextHandler;
 };
 
-const createHandler = ({ handlers, matches = identity }) => {
+const createHandler = ({ handlers, matches = identity, sessions = '' }) => {
   return (req, res) => {
     req.url = new URL(req.url, `http://${req.headers.host}`);
     req.timeStamp = new Date();
     req.matches = matches.bind(req);
+    req.sessions = sessions;
     const next = createNext(handlers);
     next(req, res);
   };
