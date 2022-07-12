@@ -1,8 +1,13 @@
+const CRLF = '\r\n';
+
+const lowercase = value => value.trim().toLowerCase();
+
 const parseAttributes = (attributes) => {
   const parsedAttributes = {};
+
   attributes.forEach(attribute => {
     const [key, value] = attribute.split('=');
-    parsedAttributes[key.trim()] = value;
+    parsedAttributes[lowercase(key)] = value;
   });
 
   return parsedAttributes;
@@ -11,28 +16,34 @@ const parseAttributes = (attributes) => {
 const parseHeaders = (headerString) => {
   const headers = {};
 
-  headerString.split('\r\n').forEach(line => {
+  headerString.split(CRLF).forEach(line => {
     if (!line) {
       return;
     }
-    const rawAttributes = line.split(';');
-    const [header, value] = rawAttributes[0].split(':');
-    const attributes = parseAttributes(rawAttributes.slice(1));
-    headers[header] = { value, attributes };
+    const [rawHeader, ...rawAttributes] = line.split(';');
+
+    const [header, value] = rawHeader.split(':');
+    const attributes = parseAttributes(rawAttributes);
+
+    headers[lowercase(header)] = { value, attributes };
   });
+
   return headers;
 };
 
 const parseMultipartFormData = (data, boundary) => {
-  const firstIndex = data.indexOf(boundary) + boundary.length;
-  const lastIndex = data.lastIndexOf(`\r\n--${boundary}`);
 
-  const content = data.slice(firstIndex, lastIndex);
-  const contentIndex = content.indexOf('\r\n\r\n');
+  const boundaryStart = data.indexOf(boundary) + boundary.length;
+  const boundaryEnd = data.lastIndexOf(`${CRLF}--${boundary}`);
+
+  const content = data.slice(boundaryStart, boundaryEnd);
+  const contentIndex = content.indexOf(CRLF.repeat(2));
 
   const rawHeaders = content.slice(0, contentIndex + 4);
-  const headers = parseHeaders(rawHeaders.toString());
   const body = content.slice(contentIndex + 4);
+
+  const headers = parseHeaders(rawHeaders.toString());
+
   return { headers, body };
 };
 
