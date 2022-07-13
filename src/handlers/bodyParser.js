@@ -1,6 +1,6 @@
 const { parseMultipartFormData } = require('./multiPartFormData.js');
 
-const getBoundary = (header) => header.split('=')[1];
+const getBoundary = (header) => header?.split('=')[1];
 
 const parseContentType = (header) => {
   if (!header) {
