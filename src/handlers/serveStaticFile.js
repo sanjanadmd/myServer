@@ -14,9 +14,9 @@ const contentType = (file) => {
   return extensions[extension];
 };
 
-const serveStaticFile = (serveFrom) => (request, response, next) => {
+const serveStaticFile = (serveFrom, aliases) => (request, response, next) => {
   const { pathname } = request.url;
-  const filename = pathname === '/' ? '/index.html' : pathname;
+  const filename = aliases[pathname] || pathname;
   try {
     const content = fs.readFileSync(serveFrom + filename);
     response.setHeader('Content-type', contentType(filename) || 'text/plain');
