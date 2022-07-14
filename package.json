@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/sanjanadmd/myServer/issues"
   },
-  "homepage": "https://github.com/sanjanadmd/myServer#readme"
+  "homepage": "https://github.com/sanjanadmd/myServer#readme",
+  "dependencies": {
+    "mime-types": "^2.1.35"
+  }
 }

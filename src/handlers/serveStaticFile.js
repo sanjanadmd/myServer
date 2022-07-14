@@ -1,17 +1,9 @@
-const fs = require("fs");
-const path = require("path");
+const mimeType = require('mime-types');
 
-const extensions = {
-  '.jpeg': 'image/jpeg',
-  '.jpg': 'image/jpeg',
-  '.png': 'image/png',
-  '.html': 'text/html',
-  '.pdf': 'application/pdf'
-};
+const fs = require('fs');
 
 const contentType = (file) => {
-  const extension = path.extname(file);
-  return extensions[extension];
+  return mimeType.lookup(file) || 'text/plain';
 };
 
 const serveStaticFile = (serveFrom, aliases) => (request, response, next) => {
